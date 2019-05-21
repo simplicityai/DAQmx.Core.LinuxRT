@@ -1,6 +1,6 @@
 # DAQmx.Core.LinuxRT
 
-This is a .NET Core library to allow the use of DAQmx in a .NET Core application running in NI Linux RT.
+This is a .NET Core library to allow the use of DAQmx in a .NET Core application running in NI Linux RT (on an x86 target).
 
 Preliminary benchmarking has shown that it has equivalent performance to LabVIEW.
 
