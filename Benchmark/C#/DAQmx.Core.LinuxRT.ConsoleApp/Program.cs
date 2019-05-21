@@ -8,6 +8,14 @@ namespace DAQmx.Core.LinuxRT.ConsoleApp
         static void Main(string[] args)
         {
             DAQmxTask task = DAQmxTask.Create("AI Task");
+            bool runLoop = true;
+
+            Console.CancelKeyPress += (s, ev) =>
+            {
+                runLoop = false;
+                ev.Cancel = true;
+            };
+
             task.CreateAIVoltageChan("cDAQ2Mod1/ai0", "Voltage0", DAQmxInputTerminalConfiguration.Default, -10, 10, DAQmxUnits.Volts, "");
             task.CreateAIVoltageChan("cDAQ2Mod1/ai1", "Voltage1", DAQmxInputTerminalConfiguration.Default, -10, 10, DAQmxUnits.Volts, "");
             task.CreateAIVoltageChan("cDAQ2Mod1/ai2", "Voltage2", DAQmxInputTerminalConfiguration.Default, -10, 10, DAQmxUnits.Volts, "");
@@ -37,7 +45,8 @@ namespace DAQmx.Core.LinuxRT.ConsoleApp
             task.CreateAIVoltageChan("cDAQ2Mod7/ai2", "Voltage26", DAQmxInputTerminalConfiguration.Default, -10, 10, DAQmxUnits.Volts, "");
             task.CreateAIVoltageChan("cDAQ2Mod7/ai3", "Voltage27", DAQmxInputTerminalConfiguration.Default, -10, 10, DAQmxUnits.Volts, "");
             task.CfgSampClkTiming("", 100000, DAQmxActiveEdge.Rising, DAQmxSampleMode.ContinuousSamples, 10000);
-            for (int i = 0; i < 6000; i++)
+            Console.WriteLine("DAQmx Task started.");
+            for (int i = 0; runLoop; i++)
             {
                 Span<double> data = task.ReadAnalogF64(10000, 10, DAQmxFillMode.GroupByScanNumber);
                 if (i % 10 == 0)
@@ -45,6 +54,7 @@ namespace DAQmx.Core.LinuxRT.ConsoleApp
             }
             task.Stop();
             task.Clear();
+            Console.WriteLine("DAQmx Task stopped.");
         }
     }
 }
