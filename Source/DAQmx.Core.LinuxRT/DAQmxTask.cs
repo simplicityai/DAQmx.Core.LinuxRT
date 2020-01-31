@@ -11,6 +11,18 @@ namespace DAQmx.Core.LinuxRT
         private int channels;
         private DAQmxTask() { }
 
+        public double SampleClockRate
+        {
+            get
+            {
+                double data = 123;
+                int error = Interop.DAQmxGetSampClkRate(taskHandle, ref data);
+                if (error < 0)
+                    throw new DAQmxException(error, "Could not read SampleClockRate");
+                return data;
+            }
+        }
+
         public static DAQmxTask Create(string taskName)
         {
             int error = Interop.DAQmxCreateTask(taskName, out IntPtr taskHandleIntPtr);
@@ -31,11 +43,25 @@ namespace DAQmx.Core.LinuxRT
             channels++;
         }
 
+        public void ConfigureLoggingTDMS(string filePath, DAQmxLoggingMode loggingMode, string groupName, DAQmxLoggingTDMSOperation operation)
+        {
+            int error = Interop.DAQmxConfigureLogging(taskHandle, filePath, (int)loggingMode, groupName, (int)operation);
+            if (error < 0)
+                throw new DAQmxException(error, "Could not configure TDMS logging");
+        }
+
         public void CfgSampClkTiming(string source, double rate, DAQmxActiveEdge activeEdge, DAQmxSampleMode sampleMode, ulong sampsPerChan)
         {
             int error = Interop.DAQmxCfgSampClkTiming(taskHandle, source, rate, (int)activeEdge, (int)sampleMode, sampsPerChan);
             if (error < 0)
                 throw new DAQmxException(error, "Could not configure Sample Clock Timing");
+        }
+
+        public void Start()
+        {
+            int error = Interop.DAQmxStartTask(taskHandle);
+            if (error < 0)
+                throw new DAQmxException(error, "Could not start Task");
         }
 
         public Span<double> ReadAnalogF64(int numSampsPerChan, double timeout, DAQmxFillMode fillMode)

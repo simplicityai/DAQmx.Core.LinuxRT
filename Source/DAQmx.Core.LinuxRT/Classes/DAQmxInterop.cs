@@ -8,24 +8,17 @@ namespace DAQmx.Core.LinuxRT
     internal class Interop
     {
         #region Task Configuration/Control
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
-        internal static extern int DAQmxLoadTask(string taskName, out IntPtr taskHandle);
-
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
-        internal static extern int DAQmxCreateTask(string taskName, out IntPtr taskHandle);
-
-        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
-        //internal static extern int DAQmxAddGlobalChansToTask(string taskName, out IntPtr taskHandle);
-
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
-        public static extern int DAQmxStartTask(IntPtr taskHandle);
-
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
-        public static extern int DAQmxStopTask(IntPtr taskHandle);
-
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
-        public static extern int DAQmxClearTask(IntPtr taskHandle);
         /*
+        int32 __CFUNC     DAQmxLoadTask                  (const char taskName[], TaskHandle *taskHandle);
+        int32 __CFUNC     DAQmxCreateTask                (const char taskName[], TaskHandle *taskHandle);
+        // Channel Names must be valid channels already available in MAX. They are not created.
+        int32 __CFUNC     DAQmxAddGlobalChansToTask      (TaskHandle taskHandle, const char channelNames[]);
+
+        int32 __CFUNC     DAQmxStartTask                 (TaskHandle taskHandle);
+        int32 __CFUNC     DAQmxStopTask                  (TaskHandle taskHandle);
+
+        int32 __CFUNC     DAQmxClearTask                 (TaskHandle taskHandle);
+
         int32 __CFUNC     DAQmxWaitUntilTaskDone         (TaskHandle taskHandle, float64 timeToWait);
         int32 __CFUNC     DAQmxWaitForValidTimestamp     (TaskHandle taskHandle, int32 timestampEvent, float64 timeout, CVIAbsoluteTime* timestamp);
         int32 __CFUNC     DAQmxIsTaskDone                (TaskHandle taskHandle, bool32 *isTaskDone);
@@ -46,6 +39,23 @@ namespace DAQmx.Core.LinuxRT
         int32 __CFUNC     DAQmxRegisterDoneEvent         (TaskHandle task, uInt32 options, DAQmxDoneEventCallbackPtr callbackFunction, void *callbackData);
         int32 __CFUNC     DAQmxRegisterSignalEvent       (TaskHandle task, int32 signalID, uInt32 options, DAQmxSignalEventCallbackPtr callbackFunction, void *callbackData);
          */
+        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        internal static extern int DAQmxLoadTask(string taskName, out IntPtr taskHandle);
+
+        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        internal static extern int DAQmxCreateTask(string taskName, out IntPtr taskHandle);
+
+        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //internal static extern int DAQmxAddGlobalChansToTask(string taskName, out IntPtr taskHandle);
+
+        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        internal static extern int DAQmxStartTask(IntPtr taskHandle);
+
+        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        internal static extern int DAQmxStopTask(IntPtr taskHandle);
+
+        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        internal static extern int DAQmxClearTask(IntPtr taskHandle);
         #endregion
         #region Channel Configuration/Creation
         [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
@@ -181,8 +191,59 @@ namespace DAQmx.Core.LinuxRT
         #region Triggering
         #endregion
         #region Read Data
+        /*
+        int32 __CFUNC     DAQmxReadAnalogF64             (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, float64 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadAnalogScalarF64       (TaskHandle taskHandle, float64 timeout, float64 *value, bool32 *reserved);
+
+        int32 __CFUNC     DAQmxReadBinaryI16             (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, int16 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+
+        int32 __CFUNC     DAQmxReadBinaryU16             (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, uInt16 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+
+        int32 __CFUNC     DAQmxReadBinaryI32             (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, int32 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+
+        int32 __CFUNC     DAQmxReadBinaryU32             (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, uInt32 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+
+        int32 __CFUNC     DAQmxReadDigitalU8             (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, uInt8 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadDigitalU16            (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, uInt16 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadDigitalU32            (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, uInt32 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadDigitalScalarU32      (TaskHandle taskHandle, float64 timeout, uInt32 *value, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadDigitalLines          (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, uInt8 readArray[], uInt32 arraySizeInBytes, int32 *sampsPerChanRead, int32 *numBytesPerSamp, bool32 *reserved);
+
+        int32 __CFUNC     DAQmxReadCounterF64            (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, float64 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadCounterU32            (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, uInt32 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadCounterF64Ex          (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, float64 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadCounterU32Ex          (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, uInt32 readArray[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadCounterScalarF64      (TaskHandle taskHandle, float64 timeout, float64 *value, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadCounterScalarU32      (TaskHandle taskHandle, float64 timeout, uInt32 *value, bool32 *reserved);
+
+
+
+        int32 __CFUNC     DAQmxReadCtrFreq               (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 interleaved, float64 readArrayFrequency[], float64 readArrayDutyCycle[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadCtrTime               (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 interleaved, float64 readArrayHighTime[], float64 readArrayLowTime[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadCtrTicks              (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 interleaved, uInt32 readArrayHighTicks[], uInt32 readArrayLowTicks[], uInt32 arraySizeInSamps, int32 *sampsPerChanRead, bool32 *reserved);
+
+        int32 __CFUNC     DAQmxReadCtrFreqScalar         (TaskHandle taskHandle, float64 timeout, float64 *frequency, float64 *dutyCycle, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadCtrTimeScalar         (TaskHandle taskHandle, float64 timeout, float64 *highTime, float64 *lowTime, bool32 *reserved);
+        int32 __CFUNC     DAQmxReadCtrTicksScalar        (TaskHandle taskHandle, float64 timeout, uInt32 *highTicks, uInt32 *lowTicks, bool32 *reserved);
+
+
+
+        int32 __CFUNC     DAQmxReadRaw                   (TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, void *readArray, uInt32 arraySizeInBytes, int32 *sampsRead, int32 *numBytesPerSamp, bool32 *reserved);
+
+        int32 __CFUNC     DAQmxGetNthTaskReadChannel     (TaskHandle taskHandle, uInt32 index, char buffer[], int32 bufferSize);
+
+        int32 __CFUNC_C   DAQmxGetReadAttribute          (TaskHandle taskHandle, int32 attribute, void *value, ...);
+        int32 __CFUNC_C   DAQmxSetReadAttribute          (TaskHandle taskHandle, int32 attribute, ...);
+        int32 __CFUNC     DAQmxResetReadAttribute        (TaskHandle taskHandle, int32 attribute);
+
+        int32 __CFUNC     DAQmxConfigureLogging          (TaskHandle taskHandle, const char filePath[], int32 loggingMode, const char groupName[], int32 operation);
+        int32 __CFUNC     DAQmxStartNewFile              (TaskHandle taskHandle, const char filePath[]);
+        */
         [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
         public static extern Int32 DAQmxReadAnalogF64(IntPtr taskHandle, Int32 numSampsPerChan, double timeout, Int32 fillMode, double[] readArray, UInt32 arraySizeInSamps, out IntPtr sampsPerChanRead, IntPtr reserved);
+
+        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        public static extern Int32 DAQmxConfigureLogging(IntPtr taskHandle, string filePath, Int32 loggingMode, string groupName, Int32 operation);
         #endregion
         #region Write Data
         #endregion
@@ -212,7 +273,28 @@ namespace DAQmx.Core.LinuxRT
         #endregion
         #region Error Handling
         [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
-        public static extern int DAQmxGetErrorString(int errorCode, StringBuilder errorString, uint buffersize);
+        internal static extern int DAQmxGetErrorString(Int32 errorCode, StringBuilder errorString, UInt32 buffersize);
+        #endregion
+        #region NI-DAQmx Specific Attribute Get/Set/Reset Function Declarations
+        ////*** Set/Get functions for DAQmx_Logging_FilePath ***
+        //int32 __CFUNC DAQmxGetLoggingFilePath(TaskHandle taskHandle, char* data, uInt32 bufferSize);
+        //int32 __CFUNC DAQmxSetLoggingFilePath(TaskHandle taskHandle, const char* data);
+        //int32 __CFUNC DAQmxResetLoggingFilePath(TaskHandle taskHandle);
+        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //internal static extern int DAQmxGetLoggingFilePath(IntPtr taskHandle, StringBuilder data, uint bufferSize);     //Use StringBuilder(256), and pass 256 into bufferSize
+        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //internal static extern int DAQmxSetLoggingFilePath(IntPtr taskHandle, string data);
+        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //internal static extern int DAQmxResetLoggingFilePath(IntPtr taskHandle);
+        //int32 __CFUNC DAQmxGetSampClkRate(TaskHandle taskHandle, float64* data);
+        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        internal static extern int DAQmxGetSampClkRate(IntPtr taskHandle, ref double data);
+        ////int32 __CFUNC DAQmxGetSampClkTimebaseDiv(TaskHandle taskHandle, uInt32 *data);
+        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //internal static extern int DAQmxGetSampClkTimebaseDiv(IntPtr taskHandle, ref UInt32 data);
+        ////int32 __CFUNC DAQmxGetSampClkTimebaseRate(TaskHandle taskHandle, float64 *data);
+        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //internal static extern int DAQmxGetSampClkTimebaseRate(IntPtr taskHandle, ref double data);
         #endregion
     }
 }
