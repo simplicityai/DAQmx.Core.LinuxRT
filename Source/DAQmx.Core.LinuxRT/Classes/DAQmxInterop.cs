@@ -7,6 +7,8 @@ namespace DAQmx.Core.LinuxRT
 {
     internal class Interop
     {
+        //const string lib = "/usr/local/natinst/lib/libnidaqmx.so";
+        const string lib = "/usr/lib/x86_64-linux-gnu/libnidaqmx.so";
         #region Task Configuration/Control
         /*
         int32 __CFUNC     DAQmxLoadTask                  (const char taskName[], TaskHandle *taskHandle);
@@ -39,26 +41,26 @@ namespace DAQmx.Core.LinuxRT
         int32 __CFUNC     DAQmxRegisterDoneEvent         (TaskHandle task, uInt32 options, DAQmxDoneEventCallbackPtr callbackFunction, void *callbackData);
         int32 __CFUNC     DAQmxRegisterSignalEvent       (TaskHandle task, int32 signalID, uInt32 options, DAQmxSignalEventCallbackPtr callbackFunction, void *callbackData);
          */
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        [DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         internal static extern int DAQmxLoadTask(string taskName, out IntPtr taskHandle);
 
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        [DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         internal static extern int DAQmxCreateTask(string taskName, out IntPtr taskHandle);
 
-        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //[DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         //internal static extern int DAQmxAddGlobalChansToTask(string taskName, out IntPtr taskHandle);
 
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        [DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         internal static extern int DAQmxStartTask(IntPtr taskHandle);
 
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        [DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         internal static extern int DAQmxStopTask(IntPtr taskHandle);
 
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        [DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         internal static extern int DAQmxClearTask(IntPtr taskHandle);
         #endregion
         #region Channel Configuration/Creation
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        [DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         internal static extern int DAQmxCreateAIVoltageChan(IntPtr taskHandle, string physicalChannel, string nameToAssignToChannel, int terminalConfig, double minVal, double maxVal, int units, string customScaleName);
         /*
         int32 __CFUNC     DAQmxCreateAICurrentChan       (TaskHandle taskHandle, const char physicalChannel[], const char nameToAssignToChannel[], int32 terminalConfig, float64 minVal, float64 maxVal, int32 units, int32 shuntResistorLoc, float64 extShuntResistorVal, const char customScaleName[]);
@@ -164,7 +166,7 @@ namespace DAQmx.Core.LinuxRT
          */
         #endregion
         #region Timing
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]                                                      // (Analog/Counter Timing)
+        [DllImport(lib, CallingConvention = CallingConvention.StdCall)]                                                      // (Analog/Counter Timing)
         internal static extern int DAQmxCfgSampClkTiming(IntPtr taskHandle, string source, double rate, int activeEdge, int sampleMode, ulong sampsPerChan);
         /*
         // (Digital Timing)
@@ -239,10 +241,10 @@ namespace DAQmx.Core.LinuxRT
         int32 __CFUNC     DAQmxConfigureLogging          (TaskHandle taskHandle, const char filePath[], int32 loggingMode, const char groupName[], int32 operation);
         int32 __CFUNC     DAQmxStartNewFile              (TaskHandle taskHandle, const char filePath[]);
         */
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        [DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         public static extern Int32 DAQmxReadAnalogF64(IntPtr taskHandle, Int32 numSampsPerChan, double timeout, Int32 fillMode, double[] readArray, UInt32 arraySizeInSamps, out IntPtr sampsPerChanRead, IntPtr reserved);
 
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        [DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         public static extern Int32 DAQmxConfigureLogging(IntPtr taskHandle, string filePath, Int32 loggingMode, string groupName, Int32 operation);
         #endregion
         #region Write Data
@@ -272,7 +274,7 @@ namespace DAQmx.Core.LinuxRT
         #region cDAQ Sync Connections
         #endregion
         #region Error Handling
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        [DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         internal static extern int DAQmxGetErrorString(Int32 errorCode, StringBuilder errorString, UInt32 buffersize);
         #endregion
         #region NI-DAQmx Specific Attribute Get/Set/Reset Function Declarations
@@ -280,20 +282,20 @@ namespace DAQmx.Core.LinuxRT
         //int32 __CFUNC DAQmxGetLoggingFilePath(TaskHandle taskHandle, char* data, uInt32 bufferSize);
         //int32 __CFUNC DAQmxSetLoggingFilePath(TaskHandle taskHandle, const char* data);
         //int32 __CFUNC DAQmxResetLoggingFilePath(TaskHandle taskHandle);
-        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //[DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         //internal static extern int DAQmxGetLoggingFilePath(IntPtr taskHandle, StringBuilder data, uint bufferSize);     //Use StringBuilder(256), and pass 256 into bufferSize
-        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //[DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         //internal static extern int DAQmxSetLoggingFilePath(IntPtr taskHandle, string data);
-        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //[DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         //internal static extern int DAQmxResetLoggingFilePath(IntPtr taskHandle);
         //int32 __CFUNC DAQmxGetSampClkRate(TaskHandle taskHandle, float64* data);
-        [DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        [DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         internal static extern int DAQmxGetSampClkRate(IntPtr taskHandle, ref double data);
         ////int32 __CFUNC DAQmxGetSampClkTimebaseDiv(TaskHandle taskHandle, uInt32 *data);
-        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //[DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         //internal static extern int DAQmxGetSampClkTimebaseDiv(IntPtr taskHandle, ref UInt32 data);
         ////int32 __CFUNC DAQmxGetSampClkTimebaseRate(TaskHandle taskHandle, float64 *data);
-        //[DllImport("/usr/local/natinst/lib/libnidaqmx.so", CallingConvention = CallingConvention.StdCall)]
+        //[DllImport(lib, CallingConvention = CallingConvention.StdCall)]
         //internal static extern int DAQmxGetSampClkTimebaseRate(IntPtr taskHandle, ref double data);
         #endregion
     }
